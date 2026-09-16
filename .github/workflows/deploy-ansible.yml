@@ -47,7 +47,9 @@ jobs:
         run: |
           set -euo pipefail
           pip install --quiet ansible-core
-          ansible-galaxy collection install -r requirements.yml
+          # GitHub-hosted runners can restore a malformed Galaxy response
+          # cache; clear it before resolving deployment collections.
+          ansible-galaxy collection install --clear-response-cache -r requirements.yml
           ansible-playbook playbooks/deploy.yml \
             -e project='${{ inputs.project }}' \
             -e src_base="$GITHUB_WORKSPACE" \
